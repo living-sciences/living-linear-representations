@@ -1,0 +1,34 @@
+{
+  "schema": "sai.followup.result_card/v1",
+  "headline": "Updated 2023-2025 claim: the causal inner product keeps concepts approximately orthogonal (|ip| ~ 0.052-0.060) and stays R = 1.22-1.48x more orthogonal than Euclidean on every base model, but that advantage is set by model family (LLaMA ~1.4-1.5, Qwen/OLMo ~1.2-1.3), not scale or year.",
+  "status": "completed",
+  "metrics": [
+    {"label": "Causal advantage R = Euclid/causal (range across 5 models)", "value": "1.22-1.48x, R>1 on all 5", "baseline": "1.52x", "baseline_label": "Llama-2-7B all-27 (followup/001-living-update/results/metrics_llama2-7b.json)", "note": "Per-era mean 1.42/1.35/1.24; decline is a Llama->Qwen/OLMo family split, not scale (R vs log-params corr -0.09)"},
+    {"label": "Causal off-diagonal vs era (orthogonality trend)", "value": "flat 0.052-0.062; slope +0.0010/yr, R2=0.06", "baseline": "0.046 (Llama-2 anchor)", "baseline_label": "followup/001-living-update/results/aggregate.json (inter_causal_mean) + metrics_*.json", "note": "LOO slope range [-0.0042,+0.0028] flips sign; concepts stay ~orthogonal at every generation"},
+    {"label": "Family stability: cross-family vs within-family |dR|", "value": "~4.8x larger across families", "baseline": "n/a (new decomposition)", "baseline_label": "derived from followup/001-living-update/results/aggregate.json (inter_ratio)", "note": "within-family |dR|=0.056 vs same-era Llama-vs-Qwen |dR|=0.271; OLMo-3 groups with Qwen"},
+    {"label": "Subspace survival (Cohen's d>=1) mean over ladder", "value": "~99% (26/26 x4, 21/22 Llama-2)", "baseline": "26/27", "baseline_label": "paper; 001 metrics_*.json (subspace.n_separated/n_viable)", "note": "Exception thing=>part is Llama-2-only (d=0.85); d=1.17-1.36 on all newer models"},
+    {"label": "Appendix D.2 test (Euclid fails on newer models?)", "value": "Contradicted in direction", "baseline": "paper conjecture", "baseline_label": "001 metrics_*.json (inter_euclid_mean vs inter_causal_mean)", "note": "Causal advantage is largest on LLaMA, smallest on Qwen/OLMo; Euclidean draws closer to causal on newer models"}
+  ],
+  "tables": [
+    {"title": "Per-era parametric summary (own-viable set)",
+     "columns": ["Era", "Models", "Causal mean", "Euclid mean", "R", "n_sep/n_viable", "Exception"],
+     "rows": [
+       ["2023", "Llama-2-7B", "0.052", "0.074", "1.42", "21/22", "thing=>part"],
+       ["2024", "Llama-3.1, Qwen2.5", "0.059", "0.080", "1.35 (1.23-1.48)", "26/26", "none"],
+       ["2025", "Qwen3, OLMo-3", "0.055", "0.070", "1.27 (1.24-1.30)", "26/26", "none"]
+     ],
+     "highlight_row": 0}
+  ],
+  "figures": [
+    {"file": "results/theory_fit.png",
+     "caption": "Fit over the 2023-2025 ladder (22-concept intersection). A: causal off-diagonal |ip| is essentially flat across eras (OLS slope +0.001/yr, R2=0.06; grey LOO band). B: the causal advantage R declines with year (R2=0.38) but the family markers show it is a Llama (high, blue) vs Qwen/OLMo (low, orange/green) split, not a scale effect; R>1 everywhere (red dotted R=1 line). 5 points => descriptive fit, not a scaling law.",
+     "alt": "Two panels vs release year 2023-2025. Left: causal off-diagonal points 0.052-0.062 with a nearly flat grey trend line and wide leave-one-out band. Right: ratio R with two high blue Llama points (~1.42, 1.48) and lower orange Qwen and green OLMo points (~1.22-1.30); a downward grey trend line; a red dotted line at R=1 far below all points."}
+  ],
+  "notes": [
+    "No new model inference: every value is a fit over the numbers Study 001 saved to followup/001-living-update/results/ (metrics_*.json, aggregate.json).",
+    "5 data points: all fits are descriptive -- every leave-one-out R2 is negative and every bootstrap slope CI includes 0. No scaling law is claimed.",
+    "Era is confounded with family (2023=Llama-only, 2025=Qwen/OLMo-only) and tokenizer coverage (coverage vs year corr +0.80); the 22-concept intersection series is used to control coverage.",
+    "The updated one-paragraph claim and the fits (with slope/R2/LOO/bootstrap) are in report.md; per-model table in results/theory_fit.csv."
+  ],
+  "report_file": "report.md"
+}

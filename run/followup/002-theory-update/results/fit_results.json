@@ -1,0 +1,629 @@
+{
+  "provenance": {
+    "source_dir": "/net/projects2/chai-lab-models/haokunliu/alignment-batch/alignment_papers/test-corpus/linear-representation-hypothesis/run/followup/001-living-update/results",
+    "source_files": [
+      "metrics_llama2-7b.json",
+      "metrics_llama3.1-8b.json",
+      "metrics_qwen2.5-7b.json",
+      "metrics_qwen3-8b-base.json",
+      "metrics_olmo3-7b.json",
+      "aggregate.json"
+    ],
+    "primary_series": "22-concept intersection (inter_*), coverage-controlled across all 5 models",
+    "note": "No model inference; all quantities read from 001's saved JSON."
+  },
+  "table": [
+    {
+      "model": "llama2-7b",
+      "label": "Llama-2-7B",
+      "family": "Llama",
+      "year": 2023,
+      "params_b": 6.74,
+      "hidden": 4096,
+      "vocab": 32000,
+      "coverage_pairs": 641,
+      "causal_inter": 0.052218105643987656,
+      "euclid_inter": 0.07397908717393875,
+      "R_inter": 1.416732496546562,
+      "n_sep_inter": 21,
+      "n_tot_inter": 22,
+      "causal_own": 0.052218105643987656,
+      "euclid_own": 0.07397908717393875,
+      "R_own": 1.416732496546562,
+      "n_sep_own": 21,
+      "n_viable_own": 22,
+      "causal_all27": 0.04580405727028847,
+      "euclid_all27": 0.06945490092039108,
+      "R_all27": 1.5163482245806228,
+      "exception": "thing=>part"
+    },
+    {
+      "model": "llama3.1-8b",
+      "label": "Llama-3.1-8B",
+      "family": "Llama",
+      "year": 2024,
+      "params_b": 8.03,
+      "hidden": 4096,
+      "vocab": 128256,
+      "coverage_pairs": 1144,
+      "causal_inter": 0.05872871354222298,
+      "euclid_inter": 0.0873604416847229,
+      "R_inter": 1.4875252055694215,
+      "n_sep_inter": 22,
+      "n_tot_inter": 22,
+      "causal_own": 0.05762343108654022,
+      "euclid_own": 0.0853666365146637,
+      "R_own": 1.4814570202607005,
+      "n_sep_own": 26,
+      "n_viable_own": 26,
+      "causal_all27": 0.054493628442287445,
+      "euclid_all27": 0.08167165517807007,
+      "R_all27": 1.4987376967302892,
+      "exception": "none"
+    },
+    {
+      "model": "qwen2.5-7b",
+      "label": "Qwen2.5-7B",
+      "family": "Qwen",
+      "year": 2024,
+      "params_b": 7.62,
+      "hidden": 3584,
+      "vocab": 152064,
+      "coverage_pairs": 1159,
+      "causal_inter": 0.06168787553906441,
+      "euclid_inter": 0.07505223155021667,
+      "R_inter": 1.2166447765361796,
+      "n_sep_inter": 22,
+      "n_tot_inter": 22,
+      "causal_own": 0.0603620782494545,
+      "euclid_own": 0.073963962495327,
+      "R_own": 1.2253382361962566,
+      "n_sep_own": 26,
+      "n_viable_own": 26,
+      "causal_all27": 0.05726790800690651,
+      "euclid_all27": 0.07132561504840851,
+      "R_all27": 1.2454726832313596,
+      "exception": "none"
+    },
+    {
+      "model": "qwen3-8b-base",
+      "label": "Qwen3-8B-Base",
+      "family": "Qwen",
+      "year": 2025,
+      "params_b": 8.19,
+      "hidden": 4096,
+      "vocab": 151936,
+      "coverage_pairs": 1159,
+      "causal_inter": 0.05770888179540634,
+      "euclid_inter": 0.07259786874055862,
+      "R_inter": 1.2580016538517897,
+      "n_sep_inter": 22,
+      "n_tot_inter": 22,
+      "causal_own": 0.05726798251271248,
+      "euclid_own": 0.07433680444955826,
+      "R_own": 1.2980517417923148,
+      "n_sep_own": 26,
+      "n_viable_own": 26,
+      "causal_all27": 0.05417618900537491,
+      "euclid_all27": 0.07116357982158661,
+      "R_all27": 1.313558246308657,
+      "exception": "none"
+    },
+    {
+      "model": "olmo3-7b",
+      "label": "OLMo-3-7B",
+      "family": "OLMo",
+      "year": 2025,
+      "params_b": 7.3,
+      "hidden": 4096,
+      "vocab": 100278,
+      "coverage_pairs": 1144,
+      "causal_inter": 0.05437491461634636,
+      "euclid_inter": 0.0665087029337883,
+      "R_inter": 1.2231504803833613,
+      "n_sep_inter": 22,
+      "n_tot_inter": 22,
+      "causal_own": 0.052648164331912994,
+      "euclid_own": 0.06521584838628769,
+      "R_own": 1.2387107739434844,
+      "n_sep_own": 26,
+      "n_viable_own": 26,
+      "causal_all27": 0.0496976263821125,
+      "euclid_all27": 0.06197338178753853,
+      "R_all27": 1.2470088875279643,
+      "exception": "none"
+    }
+  ],
+  "fits": {
+    "causal_inter~year": {
+      "covariate": "year",
+      "ols": {
+        "slope": 0.0010435687644138718,
+        "intercept": -2.0554481946991534,
+        "r2": 0.05523206106228595,
+        "pearson_r": 0.23501502305658226,
+        "ss_res": 5.2159578291260154e-05,
+        "ss_tot": 5.520887843623035e-05
+      },
+      "loo": {
+        "slope_mean": 0.0004752089354129427,
+        "slope_min": -0.004166396334768121,
+        "slope_max": 0.0027453880757094956,
+        "slope_std": 0.0026768246971834503,
+        "loo_rmse": 0.006774228986548855,
+        "loo_r2": -3.1560505902329368,
+        "all_slopes": [
+          -0.004166396334768121,
+          0.0012248168614783699,
+          0.0014938315884635454,
+          0.0010784044861814244,
+          0.0027453880757094956
+        ]
+      },
+      "bootstrap": {
+        "n_valid": 4902,
+        "slope_median": 0.0010784044861794485,
+        "ci2_5": -0.006326573590436011,
+        "ci97_5": 0.008483382562797034,
+        "frac_negative": 0.3178294573643411,
+        "frac_positive": 0.6821705426356589
+      }
+    },
+    "causal_inter~logparams": {
+      "covariate": "log_params",
+      "ols": {
+        "slope": 0.03422116297567312,
+        "intercept": -0.012270719228284816,
+        "r2": 0.519967537569251,
+        "pearson_r": 0.7210877460956127,
+        "ss_res": 2.650205386378353e-05,
+        "ss_tot": 5.520887843623035e-05
+      },
+      "loo": {
+        "slope_mean": 0.03312606728549385,
+        "slope_min": 0.020001004652364183,
+        "slope_max": 0.046344056608650125,
+        "slope_std": 0.009416660905764054,
+        "loo_rmse": 0.003402008117820892,
+        "loo_r2": -0.048170109730406585,
+        "all_slopes": [
+          0.020001004652364183,
+          0.035322757589744784,
+          0.03234518069130826,
+          0.046344056608650125,
+          0.031617336885401914
+        ]
+      },
+      "bootstrap": {
+        "n_valid": 4994,
+        "slope_median": 0.03340316419419716,
+        "ci2_5": -0.05561744232023256,
+        "ci97_5": 0.07812255474932465,
+        "frac_negative": 0.07509010812975571,
+        "frac_positive": 0.9249098918702443
+      }
+    },
+    "R_inter~year": {
+      "covariate": "year",
+      "ols": {
+        "slope": -0.09142545888887668,
+        "intercept": 186.3838248054416,
+        "r2": 0.3816286259814946,
+        "pearson_r": -0.617760978033966,
+        "ss_res": 0.03792283200220648,
+        "ss_tot": 0.06132695269472743
+      },
+      "loo": {
+        "slope_mean": -0.09361638234843365,
+        "slope_min": -0.11150892393516768,
+        "slope_max": -0.07789553241486212,
+        "slope_std": 0.01466073824006716,
+        "loo_rmse": 0.11343700998420772,
+        "loo_r2": -0.049127232703962465,
+        "all_slopes": [
+          -0.11150892393516768,
+          -0.07789553241486212,
+          -0.1025210259633021,
+          -0.09679100808151518,
+          -0.07936542134732125
+        ]
+      },
+      "bootstrap": {
+        "n_valid": 4902,
+        "slope_median": -0.09142545888887668,
+        "ci2_5": -0.24694913845188593,
+        "ci97_5": 0.03264408394850715,
+        "frac_negative": 0.9120767033863729,
+        "frac_positive": 0.08792329661362709
+      }
+    },
+    "R_inter~logparams": {
+      "covariate": "log_params",
+      "ols": {
+        "slope": -0.13835420667131565,
+        "intercept": 1.6002408577584117,
+        "r2": 0.007651189839826267,
+        "pearson_r": -0.08747108001978326,
+        "ss_res": 0.06085772853736203,
+        "ss_tot": 0.06132695269472743
+      },
+      "loo": {
+        "slope_mean": 0.044495278861142296,
+        "slope_min": -0.806018017777457,
+        "slope_max": 1.279420925324203,
+        "slope_std": 0.7787352369404674,
+        "loo_rmse": 0.20454382293725518,
+        "loo_r2": -2.4110756904919737,
+        "all_slopes": [
+          1.279420925324203,
+          -0.806018017777457,
+          -0.095215391710511,
+          0.17497000120730075,
+          -0.3306811227378244
+        ]
+      },
+      "bootstrap": {
+        "n_valid": 4994,
+        "slope_median": -0.06650448210297208,
+        "ci2_5": -1.8803414064956254,
+        "ci97_5": 3.1581777485604032,
+        "frac_negative": 0.513816579895875,
+        "frac_positive": 0.48618342010412496
+      }
+    },
+    "euclid_inter~year": {
+      "covariate": "year",
+      "ols": {
+        "slope": -0.0035614935415131293,
+        "intercept": 7.28427489314752,
+        "r2": 0.15331809610557845,
+        "pearson_r": -0.3915585474811888,
+        "ss_res": 0.00019613234176642434,
+        "ss_tot": 0.00023164820325589642
+      },
+      "loo": {
+        "slope_mean": -0.0044442088766497335,
+        "slope_min": -0.011653050780293902,
+        "slope_max": -0.0006906092166862642,
+        "slope_std": 0.004211783889423731,
+        "loo_rmse": 0.011616948907838721,
+        "loo_r2": -1.9128976618535485,
+        "all_slopes": [
+          -0.011653050780293902,
+          -0.002511632036078117,
+          -0.0036305602301224724,
+          -0.003735192120067912,
+          -0.0006906092166862642
+        ]
+      },
+      "bootstrap": {
+        "n_valid": 4902,
+        "slope_median": -0.0035614935415142664,
+        "ci2_5": -0.017807155847552714,
+        "ci97_5": 0.009278617799283028,
+        "frac_negative": 0.8933088535291718,
+        "frac_positive": 0.10669114647082824
+      }
+    }
+  },
+  "multi_covariate": {
+    "causal_inter": {
+      "intercept": 0.05694369822740549,
+      "beta_year": -0.0014594363767757282,
+      "beta_logparams": 0.04375705327034841,
+      "r2": 0.5876166457470748,
+      "adj_r2": 0.17523329149414968,
+      "note": "n=5, p=3: only 2 residual dof; adjusted-R2 and instability caveat apply"
+    },
+    "R_inter": {
+      "intercept": 1.3204109225774572,
+      "beta_year": -0.1333529072467437,
+      "beta_logparams": 0.732967568101982,
+      "r2": 0.5161082211928955,
+      "adj_r2": 0.03221644238579091,
+      "note": "n=5, p=3: only 2 residual dof; adjusted-R2 and instability caveat apply"
+    }
+  },
+  "per_era": {
+    "causal_inter": {
+      "2023": {
+        "mean": 0.052218105643987656,
+        "n": 1,
+        "min": 0.052218105643987656,
+        "max": 0.052218105643987656,
+        "models": [
+          "Llama-2-7B"
+        ]
+      },
+      "2024": {
+        "mean": 0.06020829454064369,
+        "n": 2,
+        "min": 0.05872871354222298,
+        "max": 0.06168787553906441,
+        "models": [
+          "Llama-3.1-8B",
+          "Qwen2.5-7B"
+        ]
+      },
+      "2025": {
+        "mean": 0.05604189820587635,
+        "n": 2,
+        "min": 0.05437491461634636,
+        "max": 0.05770888179540634,
+        "models": [
+          "Qwen3-8B-Base",
+          "OLMo-3-7B"
+        ]
+      }
+    },
+    "euclid_inter": {
+      "2023": {
+        "mean": 0.07397908717393875,
+        "n": 1,
+        "min": 0.07397908717393875,
+        "max": 0.07397908717393875,
+        "models": [
+          "Llama-2-7B"
+        ]
+      },
+      "2024": {
+        "mean": 0.08120633661746979,
+        "n": 2,
+        "min": 0.07505223155021667,
+        "max": 0.0873604416847229,
+        "models": [
+          "Llama-3.1-8B",
+          "Qwen2.5-7B"
+        ]
+      },
+      "2025": {
+        "mean": 0.06955328583717346,
+        "n": 2,
+        "min": 0.0665087029337883,
+        "max": 0.07259786874055862,
+        "models": [
+          "Qwen3-8B-Base",
+          "OLMo-3-7B"
+        ]
+      }
+    },
+    "R_inter": {
+      "2023": {
+        "mean": 1.416732496546562,
+        "n": 1,
+        "min": 1.416732496546562,
+        "max": 1.416732496546562,
+        "models": [
+          "Llama-2-7B"
+        ]
+      },
+      "2024": {
+        "mean": 1.3520849910528006,
+        "n": 2,
+        "min": 1.2166447765361796,
+        "max": 1.4875252055694215,
+        "models": [
+          "Llama-3.1-8B",
+          "Qwen2.5-7B"
+        ]
+      },
+      "2025": {
+        "mean": 1.2405760671175754,
+        "n": 2,
+        "min": 1.2231504803833613,
+        "max": 1.2580016538517897,
+        "models": [
+          "Qwen3-8B-Base",
+          "OLMo-3-7B"
+        ]
+      }
+    },
+    "causal_own": {
+      "2023": {
+        "mean": 0.052218105643987656,
+        "n": 1,
+        "min": 0.052218105643987656,
+        "max": 0.052218105643987656,
+        "models": [
+          "Llama-2-7B"
+        ]
+      },
+      "2024": {
+        "mean": 0.05899275466799736,
+        "n": 2,
+        "min": 0.05762343108654022,
+        "max": 0.0603620782494545,
+        "models": [
+          "Llama-3.1-8B",
+          "Qwen2.5-7B"
+        ]
+      },
+      "2025": {
+        "mean": 0.054958073422312737,
+        "n": 2,
+        "min": 0.052648164331912994,
+        "max": 0.05726798251271248,
+        "models": [
+          "Qwen3-8B-Base",
+          "OLMo-3-7B"
+        ]
+      }
+    },
+    "R_own": {
+      "2023": {
+        "mean": 1.416732496546562,
+        "n": 1,
+        "min": 1.416732496546562,
+        "max": 1.416732496546562,
+        "models": [
+          "Llama-2-7B"
+        ]
+      },
+      "2024": {
+        "mean": 1.3533976282284785,
+        "n": 2,
+        "min": 1.2253382361962566,
+        "max": 1.4814570202607005,
+        "models": [
+          "Llama-3.1-8B",
+          "Qwen2.5-7B"
+        ]
+      },
+      "2025": {
+        "mean": 1.2683812578678997,
+        "n": 2,
+        "min": 1.2387107739434844,
+        "max": 1.2980517417923148,
+        "models": [
+          "Qwen3-8B-Base",
+          "OLMo-3-7B"
+        ]
+      }
+    },
+    "n_sep_own": {
+      "2023": {
+        "mean": 21.0,
+        "n": 1,
+        "min": 21.0,
+        "max": 21.0,
+        "models": [
+          "Llama-2-7B"
+        ]
+      },
+      "2024": {
+        "mean": 26.0,
+        "n": 2,
+        "min": 26.0,
+        "max": 26.0,
+        "models": [
+          "Llama-3.1-8B",
+          "Qwen2.5-7B"
+        ]
+      },
+      "2025": {
+        "mean": 26.0,
+        "n": 2,
+        "min": 26.0,
+        "max": 26.0,
+        "models": [
+          "Qwen3-8B-Base",
+          "OLMo-3-7B"
+        ]
+      }
+    },
+    "n_viable_own": {
+      "2023": {
+        "mean": 22.0,
+        "n": 1,
+        "min": 22.0,
+        "max": 22.0,
+        "models": [
+          "Llama-2-7B"
+        ]
+      },
+      "2024": {
+        "mean": 26.0,
+        "n": 2,
+        "min": 26.0,
+        "max": 26.0,
+        "models": [
+          "Llama-3.1-8B",
+          "Qwen2.5-7B"
+        ]
+      },
+      "2025": {
+        "mean": 26.0,
+        "n": 2,
+        "min": 26.0,
+        "max": 26.0,
+        "models": [
+          "Qwen3-8B-Base",
+          "OLMo-3-7B"
+        ]
+      }
+    }
+  },
+  "family_deltas": {
+    "Llama-2->Llama-3.1": {
+      "d_causal": 0.006510607898235321,
+      "d_R": 0.0707927090228595
+    },
+    "Qwen2.5->Qwen3": {
+      "d_causal": -0.003978993743658066,
+      "d_R": 0.04135687731561011
+    }
+  },
+  "cross_family": {
+    "2024_Llama3.1_vs_Qwen2.5": {
+      "d_causal": -0.0029591619968414307,
+      "d_R": 0.27088042903324183
+    },
+    "2025_Qwen3_vs_OLMo3": {
+      "d_causal": 0.0033339671790599823,
+      "d_R": 0.034851173468428476
+    }
+  },
+  "family_stability": {
+    "mean_within_family_abs_dR": 0.056074793169234805,
+    "cross_family_same_era_2024_abs_dR": 0.27088042903324183,
+    "ratio_cross_over_within": 4.8306986744600104,
+    "interpretation": "R changes ~4.8x more across families (same era) than within a family generation step"
+  },
+  "subspace": {
+    "llama2-7b": {
+      "n_sep_own": 21,
+      "n_viable_own": 22,
+      "frac": 0.9545454545454546,
+      "exception": "thing=>part"
+    },
+    "llama3.1-8b": {
+      "n_sep_own": 26,
+      "n_viable_own": 26,
+      "frac": 1.0,
+      "exception": "none"
+    },
+    "qwen2.5-7b": {
+      "n_sep_own": 26,
+      "n_viable_own": 26,
+      "frac": 1.0,
+      "exception": "none"
+    },
+    "qwen3-8b-base": {
+      "n_sep_own": 26,
+      "n_viable_own": 26,
+      "frac": 1.0,
+      "exception": "none"
+    },
+    "olmo3-7b": {
+      "n_sep_own": 26,
+      "n_viable_own": 26,
+      "frac": 1.0,
+      "exception": "none"
+    }
+  },
+  "causal_advantage": {
+    "R_inter_min": 1.2166447765361796,
+    "R_inter_max": 1.4875252055694215,
+    "R_own_min": 1.2253382361962566,
+    "R_own_max": 1.4814570202607005,
+    "R_gt1_all_models": true,
+    "per_era_R_inter": {
+      "2023": 1.416732496546562,
+      "2024": 1.3520849910528006,
+      "2025": 1.2405760671175754
+    },
+    "trend_slope_R_year": -0.09142545888887668,
+    "note": "R>1 means causal strictly more orthogonal than Euclidean."
+  },
+  "covariate_correlations": {
+    "causal_vs_year": 0.23501502305658226,
+    "causal_vs_logparams": 0.7210877460956127,
+    "causal_vs_vocab": 0.885412603041423,
+    "causal_vs_coverage": 0.7245818385372441,
+    "R_vs_year": -0.617760978033966,
+    "R_vs_logparams": -0.08747108001978326,
+    "R_vs_vocab": -0.42399675145871507,
+    "R_vs_coverage": -0.4502757984537658,
+    "coverage_vs_year": 0.8013514339985965
+  }
+}

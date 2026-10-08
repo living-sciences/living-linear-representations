@@ -1,0 +1,36 @@
+{
+  "schema": "sai.followup.result_card/v1",
+  "headline": "The Linear Representation Hypothesis survives to 2025: the causal inner product stays more orthogonal than the Euclidean one on all 5 base models (2023-2025), with ~all binary single-token concepts still linear.",
+  "status": "completed",
+  "metrics": [
+    {"label": "Causal orthogonality advantage (Euclid/causal ratio), 2025 models", "value": "1.22-1.31x", "baseline": "1.52x", "baseline_label": "replicated Llama-2-7B (concept_g.pt / concept_gamma.pt)", "note": "Still >1 everywhere; ~1.5x for LLaMA lineage, weakens to ~1.25x for Qwen/OLMo (below paper's 1.5-2.5x band)"},
+    {"label": "Causal off-diagonal mean (approx orthogonality), all concepts", "value": "0.050-0.057 (2024-25 models)", "baseline": "0.046", "baseline_label": "concept_g.pt / verify/C5.json", "note": "Concepts stay approximately orthogonal under the causal metric across all generations"},
+    {"label": "Concepts with linear subspace (Cohen's d>=1), newer models", "value": "26/26", "baseline": "26/27", "baseline_label": "verify/C1.json, C2.json", "note": "Only Llama-2 has an exception (thing=>part, d=0.85), matching the paper; newer models fix it"},
+    {"label": "C11 uncorrelatedness r, separable vs non-separable pair", "value": "|r|<=0.03 vs r~0.37 (all 5)", "baseline": "small vs correlated", "baseline_label": "verify/C11.json (qualitative)", "note": "Sanity check holds identically across the ladder"},
+    {"label": "C8 intervention: king->queen flip (male=>female steering)", "value": "flips on all 5", "baseline": "flips by alpha=0.2, king out top-5 by 0.3", "baseline_label": "verify/C8.json", "note": "Causal steering direction still works on every model"}
+  ],
+  "tables": [
+    {"title": "Orthogonality & subspace across the model ladder (this session)",
+     "columns": ["Model (era)", "Causal mean", "Euclid mean", "Ratio", "Subspace (own)", "Exception"],
+     "rows": [
+       ["Llama-2-7B (2023)", "0.046", "0.070", "1.52", "21/22", "thing=>part"],
+       ["Llama-3.1-8B (2024)", "0.055", "0.082", "1.50", "26/26", "none"],
+       ["Qwen2.5-7B (2024)", "0.057", "0.071", "1.25", "26/26", "none"],
+       ["Qwen3-8B-Base (2025)", "0.054", "0.071", "1.31", "26/26", "none"],
+       ["OLMo-3-7B (2025)", "0.050", "0.062", "1.25", "26/26", "none"]
+     ],
+     "highlight_row": 0}
+  ],
+  "figures": [
+    {"file": "results/over_time_orthogonality.png",
+     "caption": "Did the finding survive? Top: mean off-diagonal |inner product| (0 = perfectly orthogonal) for the causal (solid) vs Euclidean (dashed) inner product across 5 base models 2023-2025, on the 22 concepts viable in all models; the causal line stays clearly below Euclidean everywhere (ratio annotated). The 2023 point matches the on-disk replication (0.046/0.069 causal/Euclid, all-27 concepts). Bottom: fraction of concepts with a linear subspace (Cohen's d>=1).",
+     "alt": "Two-panel figure. Top line chart: orange dashed Euclidean line above blue solid causal line across five models, causal ~0.052-0.062 and Euclidean ~0.067-0.087. Bottom bar chart: subspace fraction 21/22 for Llama-2 and 22/22 for the other four models."}
+  ],
+  "notes": [
+    "Every number computed this session from the 5 models' own unembedding matrices; the 2023/original side is read from the replication artifacts on disk and Llama-2 recomputed here reproduces 0.046/0.069 exactly.",
+    "22-concept intersection is used for the apples-to-apples series (5 morphological concepts lack >=10 single-token pairs under Llama-2's tokenizer); coverage disclosed per model in report.md.",
+    "The paper's quantitative '1.5-2.5x' band holds for the LLaMA lineage but not for Qwen/OLMo (~1.25x) - the effect persists but is weaker outside LLaMA.",
+    "Optional C6 measurement probe not run (GPU budget); optional C8 intervention was run and holds on all 5 models."
+  ],
+  "report_file": "report.md"
+}

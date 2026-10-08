@@ -1,0 +1,59 @@
+{
+  "instruction_summary": "Extend the prior 2023-2025 living-update ladder to the newest 2026 base models (primarily Qwen3.5-9B-Base, plus gemma-4-12B), reusing all prior per-model results, and re-aggregate + extend the over-time figure to 2026 to report whether the Linear Representation Hypothesis (causal-inner-product orthogonality, linear subspace structure) and the family-not-scale pattern still hold.",
+  "completed": true,
+  "steps": [
+    {"description": "Read study 001's report/summary/scripts + replication artifacts; copied 001's workspace scripts, codebase (data), and ALL its results/ (5 prior models' metrics + concept_*.pt + intervention_C8.json) into this study's results/ (treat 2023-2025 models as DONE, reuse verbatim)", "command": "cp -r 001/workspace/codebase 003/workspace/codebase; cp 001/workspace/*.py 003/workspace/; cp 001/results/* 003/results/", "exit_code": 0, "outputs": ["workspace/codebase", "results/metrics_llama2-7b.json ... metrics_olmo3-7b.json (reused)"]},
+    {"description": "Verified venv (torch 2.13.0, transformers 5.16.1, CUDA H200) and that Qwen3.5-9B-Base (tie=False), gemma-4-12B (tie=True, ~23GB, fully downloaded) are cached; confirmed arches Qwen3_5ForConditionalGeneration / Gemma4UnifiedForConditionalGeneration", "command": "python -c 'import torch,transformers; ...'; ls model snapshots", "exit_code": 0, "outputs": []},
+    {"description": "Smoke test on Qwen3.5-9B-Base BEFORE full run: AutoModelForImageTextToText load OK; unembedding (248320,4096) untied; forward pass -> 33 hidden states (32 layers) + logits; residual-stream forward-hook on dec.layers[16] reads (1,3,4096). Recipe correction: decoder is at m.model.language_model, not m.language_model", "command": "python smoke_test.py qwen3.5-9b-base", "exit_code": 0, "outputs": ["(stdout) SMOKE OK"]},
+    {"description": "Computed LRH core metrics for the 2 new 2026 models via AutoModelForImageTextToText + get_output_embeddings (unembedding), same math as 001 (fp32 eigh, tokenizer-agnostic single-token filter)", "command": "python run_model_2026.py qwen3.5-9b-base; python run_model_2026.py gemma-4-12b", "exit_code": 0, "outputs": ["results/metrics_qwen3.5-9b-base.json", "results/metrics_gemma-4-12b.json", "results/concept_g_qwen3.5-9b-base.pt", "results/concept_gamma_qwen3.5-9b-base.pt", "results/concept_g_gemma-4-12b.pt", "results/concept_gamma_gemma-4-12b.pt"]},
+    {"description": "Re-aggregated ALL 7 models (5 reused + 2 new); intersection stays 22 concepts (Llama-2 bound); reproduced prior 5 models' numbers exactly; extended over-time figure to 2026", "command": "python aggregate_2026.py", "exit_code": 0, "outputs": ["results/aggregate.json", "results/over_time_orthogonality.png", "results/over_time_orthogonality.pdf"]},
+    {"description": "Built family-not-scale figure (all-27 ratio vs release year, colored by family)", "command": "python fig_family.py", "exit_code": 0, "outputs": ["results/fig_family_not_scale.png"]},
+    {"description": "Optional C8 intervention on the 2 new models (merged into intervention_C8.json alongside the prior 5): 'Long live the' + alpha*(male=>female) still flips king->queen and pushes king out of top-5", "command": "python run_intervention_2026.py", "exit_code": 0, "outputs": ["results/intervention_C8.json"]}
+  ],
+  "key_results": {
+    "verdict": "The Linear Representation Hypothesis SURVIVES to the 2026 models: on Qwen3.5-9B-Base and gemma-4-12B the causal inner product is more orthogonal than Euclidean (ratio>1, causal off-diag ~0.063-0.069), all viable single-token concepts are linearly separable (26/26 own, 22/22 intersection), C11 and C8 hold. The 'family-not-scale' pattern holds: the 2026 Qwen3.5 point (1.27) lands inside the Qwen band despite being newer and larger.",
+    "new_2026_causal_over_euclid_ratio_all27": {"qwen3.5-9b-base": 1.270, "gemma-4-12b": 1.376},
+    "new_2026_causal_over_euclid_ratio_intersection22": {"qwen3.5-9b-base": 1.23, "gemma-4-12b": 1.29},
+    "new_2026_causal_offdiag_mean_all27": {"qwen3.5-9b-base": 0.0634, "gemma-4-12b": 0.0637},
+    "new_2026_euclid_offdiag_mean_all27": {"qwen3.5-9b-base": 0.0806, "gemma-4-12b": 0.0877},
+    "new_2026_subspace_separated_over_viable_ownset": {"qwen3.5-9b-base": "26/26", "gemma-4-12b": "26/26"},
+    "new_2026_subspace_intersection22": {"qwen3.5-9b-base": "22/22", "gemma-4-12b": "22/22"},
+    "new_2026_c11_r_separable": {"qwen3.5-9b-base": 0.0097, "gemma-4-12b": -0.0199},
+    "new_2026_c11_r_nonseparable": {"qwen3.5-9b-base": 0.3921, "gemma-4-12b": 0.4181},
+    "new_2026_c8_king_to_queen_flip_and_king_out_top5": {"qwen3.5-9b-base": true, "gemma-4-12b": true},
+    "new_2026_coverage_singletoken_pairs": {"qwen3.5-9b-base": 1460, "gemma-4-12b": 1610},
+    "new_2026_viable_concepts": {"qwen3.5-9b-base": "26/27", "gemma-4-12b": "26/27"},
+    "family_means_all27_ratio": {"LLaMA": 1.51, "Qwen": 1.28, "OLMo": 1.25, "Gemma": 1.38},
+    "intersection_concept_set_size": 22,
+    "n_models_total": 7
+  },
+  "comparison_to_original": [
+    {"quantity": "Causal off-diagonal mean, all 27 concepts", "original": "0.046", "followup": "Qwen3.5-9B 0.063; gemma-4-12B 0.064 (prior ladder: Llama-2 0.046 ... OLMo-3 0.050)", "source_file": "run/replication/codebase/matrices/concept_g.pt (also verify/C5.json)", "note": "2026 models stay approximately orthogonal under the causal metric; Llama-2 recomputed in 001 reproduced the on-disk 0.046 exactly."},
+    {"quantity": "Euclidean off-diagonal mean, all 27 concepts", "original": "0.069", "followup": "Qwen3.5-9B 0.081; gemma-4-12B 0.088", "source_file": "run/replication/codebase/matrices/concept_gamma.pt", "note": "Always above the causal value on the 2026 models."},
+    {"quantity": "Ratio Euclidean/causal (headline orthogonality advantage), all 27", "original": "1.52", "followup": "Qwen3.5-9B 1.27; gemma-4-12B 1.38", "source_file": "derived from concept_g.pt / concept_gamma.pt (2023 anchor); this session for 2026", "note": "Survives (>1) on both 2026 models; below the paper's 1.5-2.5x band, consistent with the family pattern (Qwen ~1.25-1.31, LLaMA ~1.5)."},
+    {"quantity": "family-not-scale: 2026 Qwen point vs Qwen band", "original": "Qwen2.5 1.25, Qwen3-8B 1.31 (study 001, on-disk metrics)", "followup": "Qwen3.5-9B (2026, 9B) 1.27 - inside the Qwen band", "source_file": "run/followup/001-living-update/results/metrics_qwen2.5-7b.json, metrics_qwen3-8b-base.json", "note": "Advantage tracks family, not year/scale: Qwen stays ~1.25-1.31 across 2024->2026 and 7.6B->9B."},
+    {"quantity": "Subspace separation n_separated/n_viable", "original": "26/27 (all concepts, no viability gate)", "followup": "Qwen3.5-9B 26/26; gemma-4-12B 26/26 (own viable); 22/22 on intersection", "source_file": "run/verify/C1.json, C2.json", "note": "Both 2026 models separate all viable concepts including thing=>part; subspace claim survives."},
+    {"quantity": "C11 uncorrelatedness r (separable vs non-separable)", "original": "small vs correlated (qualitative)", "followup": "separable |r|<=0.02 vs non-separable r~0.39-0.42 on both 2026 models", "source_file": "run/verify/C11.json", "note": "Sanity check holds identically on the 2026 models."},
+    {"quantity": "C8 intervention king->queen flip", "original": "flips top-1 by alpha=0.2, king out of top-5 by alpha=0.3", "followup": "both 2026 models flip king->queen (top-1 Queen by alpha=0.1) and push king out of top-5 by alpha=0.3", "source_file": "run/verify/C8.json", "note": "Causal male=>female steering still works on the 2026 models."}
+  ],
+  "artifacts": [
+    "results/over_time_orthogonality.png",
+    "results/over_time_orthogonality.pdf",
+    "results/fig_family_not_scale.png",
+    "results/metrics_qwen3.5-9b-base.json",
+    "results/metrics_gemma-4-12b.json",
+    "results/aggregate.json",
+    "results/intervention_C8.json",
+    "results/concept_g_qwen3.5-9b-base.pt",
+    "results/concept_gamma_qwen3.5-9b-base.pt",
+    "results/concept_g_gemma-4-12b.pt",
+    "results/concept_gamma_gemma-4-12b.pt"
+  ],
+  "deviations": [
+    "2026 loading recipe attribute correction: the text decoder is at m.model.language_model, not m.language_model, for both Qwen3_5ForConditionalGeneration and Gemma4UnifiedForConditionalGeneration. Affects only the optional C8 forward/hook path; the LRH core uses m.get_output_embeddings() and was unaffected. Both 2026 models loaded, forwarded, and hooked successfully (no model descoped).",
+    "gemma-4-12B added as the second 2026 point (fully downloaded ~23GB and hookable); base model used per the paper's convention; its embeddings are tied (LRH uses the unembedding = the tied weight).",
+    "The paper's '1.5-2.5x' orthogonality-advantage band is not met by the 2026 models (Qwen3.5 1.27, gemma-4 1.38, all-27); the causal metric still improves orthogonality (ratio>1) but by a smaller margin - consistent with the family-not-scale pattern.",
+    "22-concept apples-to-apples intersection unchanged from study 001 (Llama-2's tokenizer, not the 2026 models, is the binding constraint; both 2026 models are individually 26/27-viable, dropping only pronoun=>possessive which is already outside the intersection).",
+    "Prior five 2023-2025 models were reused verbatim from study 001's on-disk results (not recomputed); re-aggregating them reproduced 001's table exactly. Optional C6 measurement probe not run (as in 001)."
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "instruction_summary": "Fit a small parametric model to how the paper's causal-inner-product geometry quantities (causal off-diagonal, Euclid/causal ratio R, subspace survival) move across Study 001's 2023-2025 five-model era ladder, and write down an updated, per-era statement of the linear-representation / causal-inner-product claim. No new inference; a fit over 001's saved numbers.",
+  "completed": true,
+  "steps": [
+    {"description": "Read 001's per-model metrics and aggregate (5 models: metrics_*.json + aggregate.json)", "command": "read followup/001-living-update/results/{metrics_*.json,aggregate.json}", "exit_code": 0, "outputs": []},
+    {"description": "Fit single-covariate OLS (year, log-params) + per-era means for causal off-diagonal and ratio R, with leave-one-out and bootstrap uncertainty; family paired deltas; subspace survival; R>1 test; covariate confound correlations", "command": "python workspace/fit_theory.py", "exit_code": 0, "outputs": ["results/fit_results.json", "results/theory_fit.csv"]},
+    {"description": "Render the fit figure (causal off-diagonal & R vs era, 5 points + per-era means + OLS trend + LOO band, family markers)", "command": "python workspace/plot_theory.py", "exit_code": 0, "outputs": ["results/theory_fit.png", "results/theory_fit.pdf"]}
+  ],
+  "key_results": {
+    "causal_offdiag_range_across_ladder": "0.052-0.062 (intersection); flat with era: slope +0.0010/yr, R2=0.055, LOO slope range [-0.0042,+0.0028] (sign flips)",
+    "R_ratio_range_all_models": "1.22-1.49 (intersection); R>1 on all 5 models and all concept sets",
+    "R_per_era_mean": {"2023": 1.42, "2024": 1.35, "2025": 1.24},
+    "R_trend_with_year": "slope -0.091/yr, R2=0.38, LOO slopes all negative; bootstrap 95% CI [-0.25,+0.03] includes 0",
+    "R_vs_logparams_corr": -0.087,
+    "family_split": "R high for LLaMA lineage (1.42, 1.48), low for Qwen/OLMo (1.22-1.30); OLMo-3 (open, 2025) sits with Qwen not with era",
+    "family_stability": "R varies ~4.8x more across families (same era) than within a family generation step (mean within |dR|=0.056 vs cross-2024 |dR|=0.271)",
+    "subspace_survival": "21/22 (Llama-2) and 26/26 (each 2024-2025 model); mean ~99% of viable concepts vs paper's 26/27",
+    "exception_set": "thing=>part only, Llama-2-only (d=0.85); rises to d=1.17-1.36 on all newer models",
+    "appendix_D2_test": "Contradicted in direction: causal advantage is LARGEST on LLaMA (Euclid furthest), SMALLEST on newer Qwen/OLMo (Euclid nearly as good); Euclidean does not fail on newer models",
+    "updated_claim": "Across 2023-2025 base models (7-8B), the causal inner product keeps causally-separable concepts approximately orthogonal (mean off-diagonal |ip| ~ 0.052-0.060, flat across generations) and remains R = 1.22-1.48x more orthogonal than the Euclidean inner product on every model; subspace linearity holds for ~99% of viable single-token concepts (26/26 on the four 2024-2025 models, 21/22 on Llama-2), the sole exception thing=>part confined to Llama-2. The advantage's size is governed by family/tokenizer (LLaMA ~1.4-1.5, Qwen/OLMo ~1.2-1.3), not scale or year (R vs log-params corr ~ -0.09); the apparent era-decline of R is the changing family mix. Contra Appendix D.2, Euclidean does not degrade on newer models -- it draws closer to causal.",
+    "fit_status": "Every fit has negative leave-one-out R2 and a bootstrap slope CI spanning 0: descriptive only, not a scaling law (5 points)."
+  },
+  "comparison_to_original": [
+    {"quantity": "Causal off-diagonal mean (orthogonality), Llama-2 anchor", "original": "0.046 (all-27)", "followup": "flat 0.052-0.062 across ladder (intersection); no era trend (slope +0.0010/yr, R2=0.06)", "source_file": "followup/001-living-update/results/metrics_llama2-7b.json (orthogonality_all27.causal_mean) + aggregate.json", "note": "Concepts stay approximately orthogonal at every generation; scale/era does not measurably move it"},
+    {"quantity": "Euclid/causal ratio R", "original": "1.52 (Llama-2, all-27)", "followup": "1.22-1.49 across 5 models; per-era mean 1.42/1.35/1.24 (2023/24/25)", "source_file": "followup/001-living-update/results/aggregate.json (inter_ratio) + metrics_*.json", "note": "R>1 everywhere; the decline is a Llama->Qwen/OLMo family split, not a scale effect"},
+    {"quantity": "Subspace survival n_separated/n_viable", "original": "26/27 (paper); 21/22 Llama-2 own set in 001", "followup": "21/22 (Llama-2), 26/26 (each 2024-2025 model); mean ~99%", "source_file": "followup/001-living-update/results/metrics_*.json (subspace.n_separated / n_viable)", "note": "Claim still representative and strengthens; exception thing=>part is Llama-2-only"},
+    {"quantity": "Appendix D.2 (Euclidean works on LLaMA-2, fails on newer)", "original": "paper conjecture", "followup": "Contradicted: causal advantage largest on LLaMA, smallest on newer Qwen/OLMo", "source_file": "followup/001-living-update/results/aggregate.json + metrics_*.json (inter_euclid_mean vs inter_causal_mean)", "note": "Euclidean draws closer to causal on newer non-LLaMA models rather than failing"}
+  ],
+  "artifacts": [
+    "/net/projects2/chai-lab-models/haokunliu/alignment-batch/alignment_papers/test-corpus/linear-representation-hypothesis/run/followup/002-theory-update/results/theory_fit.png",
+    "/net/projects2/chai-lab-models/haokunliu/alignment-batch/alignment_papers/test-corpus/linear-representation-hypothesis/run/followup/002-theory-update/results/theory_fit.pdf",
+    "/net/projects2/chai-lab-models/haokunliu/alignment-batch/alignment_papers/test-corpus/linear-representation-hypothesis/run/followup/002-theory-update/results/theory_fit.csv",
+    "/net/projects2/chai-lab-models/haokunliu/alignment-batch/alignment_papers/test-corpus/linear-representation-hypothesis/run/followup/002-theory-update/results/fit_results.json"
+  ],
+  "deviations": [
+    "5 data points: all fits are descriptive (every leave-one-out R2 is negative; every bootstrap slope CI includes 0). No scaling law is claimed.",
+    "Era is confounded with family (2023=Llama-only, 2025=Qwen/OLMo-only) and with tokenizer coverage (coverage vs year corr +0.80; causal vs vocab +0.89). The 22-concept intersection series is used to neutralize coverage; year/scale slopes are not read as scale effects.",
+    "Primary fit series is the 22-concept intersection (coverage-controlled); own-viable and all-27 sets are also reported. Params are published/nominal totals (approximate).",
+    "No model or era dropped; all 5 of 001's models used. No new model inference."
+  ]
+}

@@ -1,0 +1,22 @@
+=== cell 3 stdout ===
+Prompt: Long live the
+========================================
+
+=== cell 3 stdout ===
+  &  0.0 & 0.1 & 0.2 & 0.3 & 0.4
+1 & king & Queen & queen & queen & queen
+2 & King & queen & Queen & Queen & Queen
+3 & Queen & king &  & lady & lady
+4 & queen & King & lady & woman & woman
+5 &  &  & king & women & women
+
+=== cell 4 stdout ===
+Prompt: In a monarchy, the ruler is usually a
+========================================
+  &  0.0 & 0.1 & 0.2 & 0.3 & 0.4
+1 & king & king & her & woman & woman
+2 & monarch & monarch & monarch & queen & queen
+3 & member & her & member & her & female
+4 & her & member & woman & monarch & her
+5 & person & person & queen & member & member
+

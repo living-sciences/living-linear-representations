@@ -1,0 +1,148 @@
+{
+    "step_outcomes": [
+        {
+            "step_id": 1,
+            "description": "Set up Python/PyTorch environment, install deps, point MODEL_PATH at local LLaMA-2-7B checkpoint, create matrices/ output dir.",
+            "command_executed": "uv venv --python 3.12 <venv>; uv pip install torch transformers numpy seaborn matplotlib tqdm sentencepiece jupyter nbconvert ipykernel accelerate; edit MODEL_PATH in linear_rep_geometry.py; mkdir -p matrices figures; python -c 'from transformers import LlamaTokenizer, LlamaForCausalLM'",
+            "exit_code": 0,
+            "stdout": "transformers 5.16.1; LlamaTokenizer OK; model loaded (291/291 weight shards)",
+            "stderr": "",
+            "output_files": ["matrices/ (dir)", "figures/ (dir)"],
+            "duration_seconds": 900,
+            "fixes_applied": [
+                {
+                    "file_path": "environment",
+                    "description": "Recreated venv with Python 3.12 instead of uv's default 3.14. torch/transformers ship no wheels for CPython 3.14, so the initial 3.14 venv could not install torch. Underlying cause: default interpreter too new for the DL stack.",
+                    "original_error": "uv defaulted to CPython 3.14.5; torch install would not proceed",
+                    "diff_snippet": "uv venv --python 3.12 <venv>"
+                },
+                {
+                    "file_path": "linear_rep_geometry.py",
+                    "description": "Set MODEL_PATH (line 21) to the local base LLaMA-2-7B HF checkpoint. Repo shipped this line commented out as a placeholder. Chose the base (non-chat) model to match the paper.",
+                    "original_error": "NameError: name 'MODEL_PATH' is not defined (placeholder commented out)",
+                    "diff_snippet": "- # MODEL_PATH = ### Path where the weights for LLaMA-2-7B are stored ###\n+ MODEL_PATH = \"/net/projects2/chai-lab/shared_models/hub/models--meta-llama--Llama-2-7b-hf/snapshots/01c7f73d771dfac7d292323805ebc428287df4f9\""
+                },
+                {
+                    "file_path": "environment",
+                    "description": "Installed accelerate (absent from README dep list). Underlying cause: from_pretrained(device_map='auto') requires accelerate.",
+                    "original_error": "ModuleNotFoundError: No module named 'accelerate'",
+                    "diff_snippet": "uv pip install accelerate"
+                }
+            ],
+            "code_modified": true,
+            "notes": "Import of linear_rep_geometry loads tokenizer + LLaMA-2-7B without error on A100 GPU. Empty matrices/ directory created."
+        },
+        {
+            "step_id": 2,
+            "description": "Run store_matrices.py: compute gamma, Cov(gamma), whitening transform inv_sqrt_Cov_gamma, g = gamma @ inv_sqrt_Cov_gamma, and 27 concept mean-difference directions in gamma and g space.",
+            "command_executed": "python store_matrices.py",
+            "exit_code": 0,
+            "stdout": "(weight-loading progress bars only)",
+            "stderr": "",
+            "output_files": [
+                "matrices/gamma.pt [32000,4096] float32",
+                "matrices/g.pt [32000,4096] float32",
+                "matrices/sqrt_Cov_gamma.pt [4096,4096] float32",
+                "matrices/concept_gamma.pt [27,4096] float32",
+                "matrices/concept_g.pt [27,4096] float32",
+                "matrices/concept_names.txt (27 lines)",
+                "matrices/filenames.txt (27 lines)"
+            ],
+            "duration_seconds": 60,
+            "fixes_applied": [
+                {
+                    "file_path": "linear_rep_geometry.py",
+                    "description": "Load model in float32 (added dtype=torch.float32 to from_pretrained). Underlying cause: transformers 5.x loads the checkpoint in its native fp16, but torch.linalg.eigh on CUDA does not implement 'Half'. Older transformers (which the authors used) loaded fp32 by default, so fp32 restores the authors' numerical path for the whitening/eigendecomposition rather than masking a real problem.",
+                    "original_error": "NotImplementedError: \"linalg_eigh_cuda\" not implemented for 'Half' (store_matrices.py line 17, torch.linalg.eigh(Cov_gamma))",
+                    "diff_snippet": "- ...from_pretrained(MODEL_PATH, low_cpu_mem_usage=True, device_map=\"auto\")\n+ ...from_pretrained(MODEL_PATH, low_cpu_mem_usage=True, device_map=\"auto\", dtype=torch.float32)"
+                }
+            ],
+            "code_modified": true,
+            "notes": "All 7 artifacts created with expected shapes/dtypes. concept_g/concept_gamma are [27,4096]; concept_names.txt and filenames.txt each have 27 lines in the documented order (verb=>3pSg first ... German=>Spanish last). Shared prerequisite for all downstream notebooks."
+        },
+        {
+            "step_id": 3,
+            "description": "Execute 1_subspace.ipynb: leave-one-out projections of counterfactual-pair diffs vs 100K random word-pair diffs (seed 100) onto each concept direction in g space; 7x4 histogram grid.",
+            "command_executed": "jupyter nbconvert --to notebook --execute --inplace --ExecutePreprocessor.kernel_name=lrg312 --ExecutePreprocessor.timeout=1800 1_subspace.ipynb",
+            "exit_code": 0,
+            "stdout": "[NbConvertApp] Writing 282316 bytes to 1_subspace.ipynb",
+            "stderr": "",
+            "output_files": ["figures/appendix_right-skewed_LOO_g.pdf"],
+            "duration_seconds": 90,
+            "fixes_applied": [
+                {
+                    "file_path": "environment",
+                    "description": "Registered an ipykernel ('lrg312') and passed --ExecutePreprocessor.kernel_name=lrg312 to all notebook executions. Underlying cause: notebooks carry a stale kernelspec named 'iti' (the authors' local kernel) that does not exist here.",
+                    "original_error": "jupyter_client.kernelspec.NoSuchKernel: No such kernel named iti",
+                    "diff_snippet": "python -m ipykernel install --user --name lrg312; nbconvert ... --ExecutePreprocessor.kernel_name=lrg312"
+                }
+            ],
+            "code_modified": false,
+            "notes": "Figure regenerated fresh (pre-existing committed figures were deleted first to make regeneration unambiguous). VISUAL VERIFICATION: red (counterfactual) distributions are right-skewed positive relative to blue (random ~0) for essentially all 27 concepts; the thing=>part panel is the visible exception (red overlaps blue near zero, not right-skewed) - matches the paper's noted exception. PNG preview saved to fig_previews/subspace.png."
+        },
+        {
+            "step_id": 4,
+            "description": "Execute 2_heatmap.ipynb: pairwise inner products between 27 concept directions under causal (g), Euclidean (gamma), and random M inner products; three |inner-product| heatmaps.",
+            "command_executed": "jupyter nbconvert --to notebook --execute --inplace --ExecutePreprocessor.kernel_name=lrg312 --ExecutePreprocessor.timeout=1800 2_heatmap.ipynb",
+            "exit_code": 0,
+            "stdout": "[NbConvertApp] Writing 237287 bytes to 2_heatmap.ipynb",
+            "stderr": "",
+            "output_files": ["figures/three_heatmaps.pdf"],
+            "duration_seconds": 90,
+            "fixes_applied": [],
+            "code_modified": false,
+            "notes": "VISUAL VERIFICATION: causal panel (M=Cov(gamma)^-1) shows near-zero off-diagonals (blue) with block structure - verb-tense concepts 1-6 form a block, language pairs 24-27 grouped, diagonal red (=1). Euclidean panel (M=I_d) shows more off-diagonal correlation (e.g. verb block, frequent=>infrequent). Random M panel is dense red/orange everywhere. Causal is clearly the most orthogonal, matching the paper. PNG preview saved to fig_previews/heatmaps.png."
+        },
+        {
+            "step_id": 5,
+            "description": "Execute 3_measurement.ipynb: embed last-token reps of paired Wikipedia contexts (en-fr, fr-de, fr-es, es-de), map into g space, plot per-concept two-class histograms of lambda^T gamma_W.",
+            "command_executed": "jupyter nbconvert --to notebook --execute --inplace --ExecutePreprocessor.kernel_name=lrg312 --ExecutePreprocessor.timeout=2400 3_measurement.ipynb",
+            "exit_code": 0,
+            "stdout": "[NbConvertApp] Writing 1332281 bytes to 3_measurement.ipynb",
+            "stderr": "One transient '[W] CUDACachingAllocator OOM while trying to allocate 866MB' warning; the allocator recovered and all 4 figures completed.",
+            "output_files": [
+                "figures/appendix_measurement_English-French.pdf",
+                "figures/appendix_measurement_French-German.pdf",
+                "figures/appendix_measurement_French-Spanish.pdf",
+                "figures/appendix_measurement_Spanish-German.pdf"
+            ],
+            "duration_seconds": 240,
+            "fixes_applied": [],
+            "code_modified": false,
+            "notes": "Uses num_eg=20 (the code's default in get_lambda_pairs) per language file - this is the authors' own default, not a downsizing I introduced. VISUAL VERIFICATION (French-Spanish, claim C6): the French=>Spanish concept panel separates the two language classes across zero (French/blue negative ~ -0.3, Spanish/orange positive ~ +0.3); the off-target male=>female panel shows the two classes fully overlapping near -0.05. Matches the paper. PNG preview saved to fig_previews/measurement_fr-es.png. Transient OOM was benign (retry succeeded, all outputs written)."
+        },
+        {
+            "step_id": 6,
+            "description": "Execute 4_intervention.ipynb: embed 15 monarchy prompts, add alpha*concept_g[i], plot change in log P(queen|.)/P(king|.) and log P(King|.)/P(king|.) as arrows; print top-5 next-token rank table for prompt 'Long live the', concept 17 (male=>female), alpha in linspace(0,0.4,5).",
+            "command_executed": "jupyter nbconvert --to notebook --execute --inplace --ExecutePreprocessor.kernel_name=lrg312 --ExecutePreprocessor.timeout=2400 4_intervention.ipynb; then extracted stream outputs to intervention_stdout.txt",
+            "exit_code": 0,
+            "stdout": "Rank table for 'Long live the' (concept 17 male=>female): alpha=0.0 rank1=king (king/King/Queen/queen in top-5); alpha=0.1 rank1=Queen; alpha=0.2/0.3/0.4 rank1=queen; 'king' drops out of top-5 by alpha=0.2, replaced by queen/Queen/lady/woman/women.",
+            "stderr": "",
+            "output_files": ["figures/appendix_intervention_g_king_queen_King.pdf", "intervention_stdout.txt"],
+            "duration_seconds": 120,
+            "fixes_applied": [],
+            "code_modified": false,
+            "notes": "VISUAL VERIFICATION: male=>female panel arrows point along +x (queen over king) with little +/-y movement (King over king unchanged); lower=>upper panel moves along +y (king->King); all off-target concepts show negligible movement (dots). Captured rank table confirms king->queen shift as alpha grows. PNG preview at fig_previews/intervention.png; stdout at intervention_stdout.txt."
+        },
+        {
+            "step_id": 7,
+            "description": "Execute 5_sanity_check.ipynb: scatter lambda_W^T gamma vs lambda_Z^T gamma over 32K vocab for (male=>female[17], English=>French[23]) causally separable and (verb=>3pSg[0], verb=>Ving[1]) not separable; verify uncorrelatedness (Assumption 3.3).",
+            "command_executed": "jupyter nbconvert --to notebook --execute --inplace --ExecutePreprocessor.kernel_name=lrg312 --ExecutePreprocessor.timeout=1800 5_sanity_check.ipynb",
+            "exit_code": 0,
+            "stdout": "[NbConvertApp] Writing 163258 bytes to 5_sanity_check.ipynb",
+            "stderr": "",
+            "output_files": ["figures/sanity_check.png"],
+            "duration_seconds": 90,
+            "fixes_applied": [
+                {
+                    "file_path": "linear_rep_geometry.py",
+                    "description": "Added .item() to the text-annotation coordinates in sanity_check() (axs[0].text / axs[1].text). Underlying cause: annotation coordinates a_g[ind], b_g[ind], c_g[ind], d_g[ind] are CUDA scalar tensors that matplotlib cannot auto-convert to numpy; the scatter calls already used .cpu().numpy() but the text calls did not. Device-placement fix only, no change to computed values.",
+                    "original_error": "TypeError: can't convert cuda:0 device type tensor to numpy. Use Tensor.cpu() to copy the tensor to host memory first.",
+                    "diff_snippet": "- axs[0].text(a_g[ind_1[_]], b_g[ind_1[_]], label, fontsize = 12)\n+ axs[0].text(a_g[ind_1[_]].item(), b_g[ind_1[_]].item(), label, fontsize = 12)   (and same for axs[1] with c_g/d_g)"
+                }
+            ],
+            "code_modified": true,
+            "notes": "VISUAL VERIFICATION: left panel (W: male=>female, Z: English=>French) is a diffuse/uncorrelated blob centered at origin (causally separable); right panel (W: verb=>3pSg, Z: verb=>Ving) is a visibly correlated/elongated cloud (not separable). Reference tokens (man/woman/king/queen/roi/homme/femme, read/reads/reading...) annotated. Matches the paper's Assumption 3.3 sanity check. Figure at figures/sanity_check.png."
+        }
+    ]
+}

@@ -1,0 +1,324 @@
+{
+  "llama2-7b": {
+    "hf_id": "meta-llama/Llama-2-7b-hf",
+    "era": "2023",
+    "prompt": "Long live the",
+    "concept": "male=>female",
+    "n_pairs": 11,
+    "table": {
+      "alpha=0.0": [
+        "king",
+        "King",
+        "Queen",
+        "queen",
+        ""
+      ],
+      "alpha=0.1": [
+        "Queen",
+        "queen",
+        "king",
+        "King",
+        ""
+      ],
+      "alpha=0.2": [
+        "queen",
+        "Queen",
+        "",
+        "lady",
+        "king"
+      ],
+      "alpha=0.3": [
+        "queen",
+        "Queen",
+        "lady",
+        "woman",
+        "women"
+      ],
+      "alpha=0.4": [
+        "queen",
+        "Queen",
+        "lady",
+        "woman",
+        "women"
+      ]
+    },
+    "queen_becomes_top1": true,
+    "king_leaves_top5_by_0.3+": true
+  },
+  "llama3.1-8b": {
+    "hf_id": "meta-llama/Llama-3.1-8B",
+    "era": "2024",
+    "prompt": "Long live the",
+    "concept": "male=>female",
+    "n_pairs": 26,
+    "table": {
+      "alpha=0.0": [
+        "king",
+        "King",
+        "Queen",
+        "queen",
+        ""
+      ],
+      "alpha=0.1": [
+        "Queen",
+        "queen",
+        "king",
+        "King",
+        ""
+      ],
+      "alpha=0.2": [
+        "Queen",
+        "queen",
+        "king",
+        "",
+        "King"
+      ],
+      "alpha=0.3": [
+        "queen",
+        "Queen",
+        "princess",
+        "goddess",
+        "queens"
+      ],
+      "alpha=0.4": [
+        "queen",
+        "Queen",
+        "princess",
+        "goddess",
+        "woman"
+      ]
+    },
+    "queen_becomes_top1": true,
+    "king_leaves_top5_by_0.3+": true
+  },
+  "qwen2.5-7b": {
+    "hf_id": "Qwen/Qwen2.5-7B",
+    "era": "2024",
+    "prompt": "Long live the",
+    "concept": "male=>female",
+    "n_pairs": 26,
+    "table": {
+      "alpha=0.0": [
+        "king",
+        "King",
+        "Queen",
+        "",
+        "revolution"
+      ],
+      "alpha=0.1": [
+        "Queen",
+        "queen",
+        "king",
+        "King",
+        ""
+      ],
+      "alpha=0.2": [
+        "Queen",
+        "queen",
+        "",
+        "king",
+        "new"
+      ],
+      "alpha=0.3": [
+        "Queen",
+        "queen",
+        "woman",
+        "",
+        "mother"
+      ],
+      "alpha=0.4": [
+        "Queen",
+        "queen",
+        "woman",
+        "mother",
+        "lady"
+      ]
+    },
+    "queen_becomes_top1": true,
+    "king_leaves_top5_by_0.3+": true
+  },
+  "qwen3-8b-base": {
+    "hf_id": "Qwen/Qwen3-8B-Base",
+    "era": "2025",
+    "prompt": "Long live the",
+    "concept": "male=>female",
+    "n_pairs": 26,
+    "table": {
+      "alpha=0.0": [
+        "king",
+        "King",
+        "Queen",
+        "queen",
+        "new"
+      ],
+      "alpha=0.1": [
+        "queen",
+        "Queen",
+        "king",
+        "King",
+        "new"
+      ],
+      "alpha=0.2": [
+        "queen",
+        "Queen",
+        "princess",
+        "king",
+        "new"
+      ],
+      "alpha=0.3": [
+        "queen",
+        "Queen",
+        "princess",
+        "lady",
+        "mother"
+      ],
+      "alpha=0.4": [
+        "queen",
+        "Queen",
+        "princess",
+        "lady",
+        "goddess"
+      ]
+    },
+    "queen_becomes_top1": true,
+    "king_leaves_top5_by_0.3+": true
+  },
+  "olmo3-7b": {
+    "hf_id": "allenai/Olmo-3-1025-7B",
+    "era": "2025",
+    "prompt": "Long live the",
+    "concept": "male=>female",
+    "n_pairs": 26,
+    "table": {
+      "alpha=0.0": [
+        "king",
+        "old",
+        "King",
+        "free",
+        "new"
+      ],
+      "alpha=0.1": [
+        "Queen",
+        "old",
+        "king",
+        "queen",
+        "free"
+      ],
+      "alpha=0.2": [
+        "Queen",
+        "queen",
+        "old",
+        "princess",
+        "free"
+      ],
+      "alpha=0.3": [
+        "Queen",
+        "queen",
+        "princess",
+        "lady",
+        "woman"
+      ],
+      "alpha=0.4": [
+        "queen",
+        "Queen",
+        "lady",
+        "woman",
+        "princess"
+      ]
+    },
+    "queen_becomes_top1": true,
+    "king_leaves_top5_by_0.3+": true
+  },
+  "qwen3.5-9b-base": {
+    "hf_id": "Qwen/Qwen3.5-9B-Base",
+    "era": "2026",
+    "prompt": "Long live the",
+    "concept": "male=>female",
+    "n_pairs": 27,
+    "table": {
+      "alpha=0.0": [
+        "king",
+        "Queen",
+        "King",
+        "queen",
+        "revolution"
+      ],
+      "alpha=0.1": [
+        "Queen",
+        "queen",
+        "king",
+        "King",
+        "revolution"
+      ],
+      "alpha=0.2": [
+        "Queen",
+        "queen",
+        "princess",
+        "king",
+        "revolution"
+      ],
+      "alpha=0.3": [
+        "queen",
+        "Queen",
+        "princess",
+        "goddess",
+        "girl"
+      ],
+      "alpha=0.4": [
+        "queen",
+        "Queen",
+        "princess",
+        "goddess",
+        "lady"
+      ]
+    },
+    "queen_becomes_top1": true,
+    "king_leaves_top5_by_0.3+": true
+  },
+  "gemma-4-12b": {
+    "hf_id": "google/gemma-4-12B",
+    "era": "2026",
+    "prompt": "Long live the",
+    "concept": "male=>female",
+    "n_pairs": 34,
+    "table": {
+      "alpha=0.0": [
+        "king",
+        "King",
+        "Queen",
+        "queen",
+        ""
+      ],
+      "alpha=0.1": [
+        "Queen",
+        "queen",
+        "king",
+        "King",
+        ""
+      ],
+      "alpha=0.2": [
+        "Queen",
+        "queen",
+        "king",
+        "King",
+        ""
+      ],
+      "alpha=0.3": [
+        "queen",
+        "Queen",
+        "princess",
+        "king",
+        "King"
+      ],
+      "alpha=0.4": [
+        "queen",
+        "Queen",
+        "princess",
+        "woman",
+        "Princess"
+      ]
+    },
+    "queen_becomes_top1": true,
+    "king_leaves_top5_by_0.3+": true
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "schema": "sai.followup.result_card/v1",
+  "headline": "The Linear Representation Hypothesis survives to 2026: on Qwen3.5-9B-Base the causal inner product stays 1.27x more orthogonal than Euclidean (gemma-4-12B 1.38x), all binary single-token concepts stay linear, and the advantage still clusters by model family, not scale or year.",
+  "status": "completed",
+  "metrics": [
+    {"label": "Causal orthogonality advantage (Euclid/causal ratio, all 27), Qwen3.5-9B-Base (2026)", "value": "1.27x", "baseline": "1.52x", "baseline_label": "replicated Llama-2-7B (concept_g.pt / concept_gamma.pt)", "note": "Still >1 (causal more orthogonal); lands in the Qwen family band 1.25-1.31, below the paper's 1.5-2.5x band. gemma-4-12B: 1.38x."},
+    {"label": "Causal off-diagonal mean (approx orthogonality), all 27, 2026 models", "value": "0.063 (Qwen3.5) / 0.064 (gemma-4)", "baseline": "0.046", "baseline_label": "concept_g.pt / verify/C5.json", "note": "Concepts stay approximately orthogonal under the causal metric on both 2026 models."},
+    {"label": "Concepts with linear subspace (Cohen's d>=1), 2026 models", "value": "26/26 (own); 22/22 (intersection)", "baseline": "26/27", "baseline_label": "verify/C1.json, C2.json", "note": "Both 2026 models separate every viable concept, including thing=>part; subspace claim survives."},
+    {"label": "Family-not-scale: 2026 Qwen3.5 (9B) vs Qwen band", "value": "1.27x, inside 1.25-1.31 band", "baseline": "Qwen2.5 1.25 / Qwen3-8B 1.31", "baseline_label": "study 001 on-disk metrics_qwen2.5-7b.json / metrics_qwen3-8b-base.json", "note": "Advantage tracks family, not year or scale: Qwen stays ~1.25-1.31 across 2024->2026 and 7.6B->9B."},
+    {"label": "C11 uncorrelatedness r (separable vs non-separable) + C8 king->queen flip, 2026 models", "value": "|r|<=0.02 vs r~0.39-0.42; flip holds", "baseline": "small vs correlated; flips by alpha=0.2", "baseline_label": "verify/C11.json, verify/C8.json", "note": "Both sanity checks hold on both 2026 models."}
+  ],
+  "tables": [
+    {"title": "2026 refresh vs the prior ladder (all-27 concepts; this session + reused 001 values)",
+     "columns": ["Model (era)", "Causal mean", "Euclid mean", "Ratio", "Subspace (own)", "C8 flip"],
+     "rows": [
+       ["Llama-2-7B (2023)", "0.046", "0.070", "1.52", "21/22", "yes"],
+       ["Llama-3.1-8B (2024)", "0.055", "0.082", "1.50", "26/26", "yes"],
+       ["Qwen2.5-7B (2024)", "0.057", "0.071", "1.25", "26/26", "yes"],
+       ["Qwen3-8B-Base (2025)", "0.054", "0.071", "1.31", "26/26", "yes"],
+       ["OLMo-3-7B (2025)", "0.050", "0.062", "1.25", "26/26", "yes"],
+       ["Qwen3.5-9B-Base (2026)", "0.063", "0.081", "1.27", "26/26", "yes"],
+       ["gemma-4-12B (2026)", "0.064", "0.088", "1.38", "26/26", "yes"]
+     ],
+     "highlight_row": 5}
+  ],
+  "figures": [
+    {"file": "results/over_time_orthogonality.png",
+     "caption": "Did it survive to 2026? Top: mean off-diagonal |inner product| (0 = perfectly orthogonal) for the causal (solid blue) vs Euclidean (dashed orange) inner product across 7 base models 2023-2026, on the 22 concepts viable in all 7; the causal line stays clearly below Euclidean everywhere (ratio annotated). The two 2026 models (ringed red, shaded) keep the same ordering. The 2023 point matches the on-disk replication (0.046/0.069 causal/Euclid, all-27). Bottom: fraction of concepts with a linear subspace (Cohen's d>=1) - 22/22 for every model except Llama-2 (21/22).",
+     "alt": "Two-panel figure. Top line chart: orange dashed Euclidean line above blue solid causal line across seven models; the two rightmost (2026) points are circled in red inside a shaded region, causal ~0.052-0.069, Euclidean ~0.067-0.089. Bottom bar chart: subspace fraction 21/22 for Llama-2 and 22/22 for the other six models, the two 2026 bars in orange."},
+    {"file": "results/fig_family_not_scale.png",
+     "caption": "Family, not scale or year. All-27 causal-orthogonality advantage (Euclid/causal ratio) per model vs release year, colored by family with per-family mean bands. The 2026 refresh models are ringed black. Qwen3.5-9B (2026, 9B) lands at 1.27, inside the Qwen band (1.25-1.31) set by Qwen2.5 and Qwen3 despite being newer and larger; the LLaMA lineage sits at ~1.5x and gemma-4 forms a new family point at 1.38. The paper's 1.5-2.5x band is shaded.",
+     "alt": "Scatter of ratio (y, 1.0-2.6) vs release year (x, 2023-2026). Blue LLaMA circles near 1.5; orange Qwen squares near 1.25-1.31 including the black-ringed 2026 Qwen3.5 at 1.27; green OLMo triangle at 1.25; pink Gemma diamond (black-ringed) at 1.38. Dashed per-family mean lines; grey shaded 1.5-2.5 band at top."}
+  ],
+  "notes": [
+    "Every 2026 number computed this session from each model's own unembedding matrix via AutoModelForImageTextToText + get_output_embeddings; the 2023-2025 baselines are reused verbatim from study 001's on-disk results, and the 2023 anchor is read from the replication artifacts (Llama-2 recomputed in 001 reproduces 0.046/0.069 exactly).",
+    "2026 loading-recipe correction: the text decoder is at m.model.language_model (not m.language_model) for both Qwen3.5 and gemma-4; this affected only the optional C8 hook path, not the LRH core. Both 2026 models loaded, forwarded, and hooked - neither was descoped.",
+    "gemma-4-12B (base) added as a second 2026 point (fully downloaded and hookable); its embeddings are tied, and LRH uses the unembedding (= the tied weight).",
+    "The paper's quantitative 1.5-2.5x band is not met by the 2026 models (Qwen3.5 1.27, gemma-4 1.38) - the effect persists (ratio>1, low absolute off-diagonal) but is weaker outside LLaMA, reinforcing the family-not-scale reading.",
+    "22-concept apples-to-apples intersection unchanged from study 001 (Llama-2's tokenizer is the binding constraint); both 2026 models are individually 26/27-viable."
+  ],
+  "report_file": "report.md"
+}
